@@ -28,7 +28,7 @@ jobs:
       - name: Build Frontend with Vite
         run: |
           cd frontend
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Build And Deploy to Azure Static Web Apps
