@@ -35,15 +35,12 @@ export default function MapView({
       zoomControl: true,
     });
 
-    // Modern Voyager tile layer (crisp, professional logistics map)
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-      {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> & OpenStreetMap',
-        maxZoom: 19,
-        subdomains: "abcd",
-      }
-    ).addTo(map);
+    // Standard OpenStreetMap tile layer (reliable, free, no API key watermark)
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(map);
 
     routesLayerGroupRef.current = L.layerGroup().addTo(map);
     heatmapLayerGroupRef.current = L.layerGroup().addTo(map);
