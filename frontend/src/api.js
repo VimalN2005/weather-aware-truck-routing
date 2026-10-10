@@ -1,7 +1,7 @@
 const BACKEND_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
-    : "https://weather-truck-routing-api.azurewebsites.net"; // Azure or Render production fallback
+    : "https://weather-truck-api-h7gbneffgewcehbt.centralindia-01.azurewebsites.net";
 
 export async function planWeatherRoute(params) {
   const response = await fetch(`${BACKEND_URL}/api/route-plan/`, {

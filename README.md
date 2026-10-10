@@ -8,7 +8,8 @@ Built with **React (Material UI / MUI)** on the frontend and **Django REST Frame
 
 ## 🔗 Live Application & Demo Links
 
-* **Live Hosted Application:** [https://weather-aware-truck-routing.vercel.app](https://weather-aware-truck-routing.vercel.app) *(or active deployment)*
+* **Live Frontend (Azure Static Web Apps):** [https://zealous-dune-01083c610.azurestaticapps.net](https://zealous-dune-01083c610.azurestaticapps.net)
+* **Live API Backend (Azure App Service):** [https://weather-truck-api-h7gbneffgewcehbt.centralindia-01.azurewebsites.net/api/health/](https://weather-truck-api-h7gbneffgewcehbt.centralindia-01.azurewebsites.net/api/health/)
 * **Loom Video Walkthrough:** `[Loom Walkthrough Video Link]`
 * **GitHub Repository:** [https://github.com/VimalN2005/weather-aware-truck-routing](https://github.com/VimalN2005/weather-aware-truck-routing)
 
