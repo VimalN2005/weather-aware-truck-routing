@@ -1,4 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import {
+  Container,
+  Box,
+  Grid,
+  Alert,
+  AlertTitle,
+  LinearProgress,
+  Typography,
+  Skeleton,
+} from "@mui/material";
 import Header from "./components/Header";
 import RouteForm from "./components/RouteForm";
 import RiskLegend from "./components/RiskLegend";
@@ -16,18 +26,7 @@ export default function App() {
   const [selectedRouteId, setSelectedRouteId] = useState(null);
   const [currentHour, setCurrentHour] = useState(0);
 
-  // Auto-run default scenario on initial mount
-  useEffect(() => {
-    handleCalculate({
-      origin: "Dallas, TX",
-      destination: "Chicago, IL",
-      departure_time: new Date().toISOString(),
-      load_weight: 42000,
-      sample_interval_miles: 25,
-    });
-  }, []);
-
-  const handleCalculate = async (params) => {
+  const handleCalculate = useCallback(async (params) => {
     setLoading(true);
     setError(null);
     try {
@@ -40,32 +39,44 @@ export default function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const selectedRoute = result?.routes?.find((r) => r.id === selectedRouteId) || result?.routes?.[0];
+  // Auto-run initial benchmark scenario on mount
+  useEffect(() => {
+    handleCalculate({
+      origin: "Dallas, TX",
+      destination: "Chicago, IL",
+      departure_time: new Date().toISOString(),
+      load_weight: 42000,
+      sample_interval_miles: 25,
+    });
+  }, [handleCalculate]);
+
+  const selectedRoute = useMemo(() => {
+    return result?.routes?.find((r) => r.id === selectedRouteId) || result?.routes?.[0];
+  }, [result, selectedRouteId]);
 
   return (
-    <div className="app-container">
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column", backgroundColor: "background.default" }}>
       <Header />
 
-      <main className="main-content">
-        <div className="top-layout-grid">
+      {loading && <LinearProgress color="primary" sx={{ height: 3 }} />}
+
+      <Container maxWidth="xl" sx={{ py: 3, flex: 1 }}>
+        <Grid container spacing={3}>
           {/* Left Column: Form & Legend */}
-          <div className="left-panel">
+          <Grid item xs={12} lg={4.5}>
             <RouteForm onCalculate={handleCalculate} loading={loading} />
             <RiskLegend />
-          </div>
+          </Grid>
 
-          {/* Right Column: Interactive Map & 0-48h Forecast Slider */}
-          <div className="right-panel">
+          {/* Right Column: 0-48h Slider & Map */}
+          <Grid item xs={12} lg={7.5}>
             {error && (
-              <div className="card error-banner">
-                <span className="error-icon">⚠️</span>
-                <div>
-                  <strong>Evaluation Alert:</strong>
-                  <p>{error}</p>
-                </div>
-              </div>
+              <Alert severity="error" sx={{ mb: 2.5, backgroundColor: "#1e131d", border: "1px solid #ef4444" }}>
+                <AlertTitle sx={{ fontWeight: 700 }}>Route Planning Error</AlertTitle>
+                {error}
+              </Alert>
             )}
 
             {result && (
@@ -85,8 +96,24 @@ export default function App() {
               heatmapTimeline={result?.heatmap_timeline}
               currentHour={currentHour}
             />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
+
+        {/* Loading Skeletons */}
+        {loading && !result && (
+          <Box sx={{ my: 3 }}>
+            <Typography variant="h6" sx={{ color: "text.secondary", mb: 2 }}>
+              Evaluating Alternative Routes...
+            </Typography>
+            <Grid container spacing={3}>
+              {[1, 2, 3].map((i) => (
+                <Grid item xs={12} md={4} key={i}>
+                  <Skeleton variant="rounded" height={260} sx={{ backgroundColor: "#1e293b", borderRadius: 3 }} />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
 
         {/* 3 Route Comparison Cards */}
         {result && (
@@ -97,18 +124,34 @@ export default function App() {
           />
         )}
 
-        {/* Checkpoint Audit Table */}
+        {/* Checkpoint Table */}
         {selectedRoute && <CheckpointTable route={selectedRoute} />}
-      </main>
+      </Container>
 
-      <footer className="app-footer">
-        <div>
-          <span>Spotter Full Stack Developer Assessment • Weather-Aware Truck Routing</span>
-        </div>
-        <div className="footer-links">
-          <span>Engineered with React + Leaflet & Django REST Framework</span>
-        </div>
-      </footer>
-    </div>
+      {/* Footer */}
+      <Box
+        component="footer"
+        sx={{
+          mt: "auto",
+          py: 2.5,
+          px: 4,
+          borderTop: "1px solid",
+          borderColor: "divider",
+          backgroundColor: "background.paper",
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 1,
+        }}
+      >
+        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+          Spotter Full Stack Developer Assessment • Weather-Aware Truck Routing
+        </Typography>
+        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+          React 19 + Material UI • Django 6 REST Framework • Open-Meteo & OSRM
+        </Typography>
+      </Box>
+    </Box>
   );
 }
