@@ -65,13 +65,13 @@ export default function App() {
       <Container maxWidth="xl" sx={{ py: 3, flex: 1 }}>
         <Grid container spacing={3}>
           {/* Left Column: Form & Legend */}
-          <Grid item xs={12} lg={4.5}>
+          <Grid item xs={12} md={5}>
             <RouteForm onCalculate={handleCalculate} loading={loading} />
             <RiskLegend />
           </Grid>
 
           {/* Right Column: 0-48h Slider & Map */}
-          <Grid item xs={12} lg={7.5}>
+          <Grid item xs={12} md={7}>
             {error && (
               <Alert severity="error" sx={{ mb: 2.5, backgroundColor: "#1e131d", border: "1px solid #ef4444" }}>
                 <AlertTitle sx={{ fontWeight: 700 }}>Route Planning Error</AlertTitle>
